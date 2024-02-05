@@ -17,7 +17,7 @@ class GildedRose(object):
             else:
                 self.update_normal_item(item)
 
-        item.sell_in -= 1
+            item.sell_in -= 1
 
 
 
