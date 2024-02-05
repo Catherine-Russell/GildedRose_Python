@@ -9,45 +9,48 @@ class GildedRose(object):
         for item in self.items:
             if item.name == "Sulfuras, Hand of Ragnaros":
                 continue
-                # Aged Brie
+
             if item.name == "Aged Brie":
-                if item.quality == 50:
-                    continue
-                item.quality += 1
-                if item.sell_in < 0 and item.quality < 50:
-                    item.quality += 1
-                    
-
-
-                # tivkets
-            
-                # other
-            
-            # This is the normal items thing
+                self.update_aged_brie(item) 
             elif item.name == "Backstage passes to a TAFKAL80ETC concert":
-                if item.quality < 50:
-                    item.quality += 1
-                    if item.name == "Backstage passes to a TAFKAL80ETC concert":
-                        if item.sell_in < 11:
-                            if item.quality < 50:
-                                item.quality = item.quality + 1
-                        if item.sell_in < 6:
-                            if item.quality < 50:
-                                item.quality = item.quality + 1
+                self.update_tickets(item)
             else:
-                if item.quality > 0:
-                    item.quality = item.quality - 1
-                
-            item.sell_in -= 1
-            if item.sell_in < 0:
-                if item.name != "Aged Brie":
-                    if item.name != "Backstage passes to a TAFKAL80ETC concert":
-                        if item.quality > 0:
-                            item.quality = item.quality - 1
-                    else:
-                        item.quality = 0
-            # item.sell_in -= 1
+                self.update_normal_item(item)
 
+        item.sell_in -= 1
+
+
+
+    def update_aged_brie(self, item):        
+        if item.sell_in >= 0:
+            item.quality += 1
+        else:
+            item.quality += 2
+
+        if item.quality > 50:
+            item.quality = 50
+
+    def update_tickets(self, item):
+        match item:
+            case int if item.sell_in <= 0:
+                item.quality = 0
+            case int if item.sell_in > 10:
+                item.quality += 1
+            case int if item.sell_in > 5:
+                item.quality += 2
+            case int if item.sell_in > 0:
+                item.quality += 3
+        if item.quality > 50:
+            item.quality = 50
+        
+    def update_normal_item(self, item):                
+        if item.sell_in >= 0:
+            item.quality -= 1
+        else:
+            item.quality -= 2
+
+        if item.quality < 0:
+            item.quality = 0
 
 class Item:
     def __init__(self, name, sell_in, quality):
@@ -57,11 +60,3 @@ class Item:
 
     def __repr__(self):
         return "%s, %s, %s" % (self.name, self.sell_in, self.quality)
-
-
-gilded_rose = GildedRose([Item("Aged Brie", -1, 5)])
-gilded_rose.update_quality()
-print("expect item quality to be 7")
-print(gilded_rose.items)
-
-

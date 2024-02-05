@@ -66,6 +66,14 @@ class GildedRoseTest(unittest.TestCase):
     def test_aged_brie_continues_increasing_in_quality_after_sellIn_expires(self):
         items = self.run_update_quality_once([Item("Aged Brie", -1, 5)])
         self.assertEqual(7, items[0].quality)
+
+    def test_aged_brie_sellIn_goes_down_even_if_quality_is_50(self):
+        items = self.run_update_quality_once([Item("Aged Brie", -1, 50)])
+        self.assertEqual(-2, items[0].sell_in)
+
+    def test_aged_brie_quality_goes_up_by_one_when_sellIn_is_zero(self):
+        items = self.run_update_quality_once([Item("Aged Brie", 0, 20)])
+        self.assertEqual(21, items[0].quality)
     
     def test_sulfuras_quality_is_always_80(self):
         items = self.run_update_quality_once([Item("Sulfuras, Hand of Ragnaros", 5, 80)])
